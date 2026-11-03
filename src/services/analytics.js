@@ -60,6 +60,14 @@ class AnalyticsService {
     return [...this.logs];
   }
 
+  trackPageView(pageTitle) {
+    this.logEvent('page_view', {
+      page_title: pageTitle,
+      page_location: window.location.href,
+      page_path: window.location.pathname
+    });
+  }
+
   // --- E-COMMERCE GA4 HELPERS ---
 
   trackViewItemList(items, listName = 'Rekomendasi Untuk Anda') {

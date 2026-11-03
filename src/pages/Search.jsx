@@ -1225,7 +1225,9 @@ export default function Search() {
                             <button
                               type="button"
                               className="visit-btn"
-                              onClick={() => alert(`Membuka etalase toko: ${st.name}`)}
+                              onClick={() => {
+                                window.location.href = `/store.html?shop=${encodeURIComponent(st.slug || 'pira-indonesia')}`;
+                              }}
                             >
                               Lihat Toko
                             </button>

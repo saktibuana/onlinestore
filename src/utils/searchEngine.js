@@ -318,3 +318,47 @@ export function searchStores(allStores, rawQuery, filters = {}) {
 
   return matchedStores;
 }
+
+/**
+ * Searches and sorts products within a specific store
+ */
+export function searchStoreProducts(storeProducts = [], rawQuery = '', filters = {}) {
+  const queryTokens = tokenize(rawQuery);
+
+  let results = storeProducts.map((p) => {
+    const score = queryTokens.length > 0 ? calculateProductRelevance(p, queryTokens) : 1;
+    return { product: p, score };
+  });
+
+  if (queryTokens.length > 0) {
+    results = results.filter((item) => item.score > 0);
+  }
+
+  let matched = results.map((item) => item.product);
+
+  // In-store Category Filter
+  if (filters.category && filters.category !== 'all') {
+    matched = matched.filter((p) =>
+      p.category === filters.category ||
+      p.categoryName?.toLowerCase() === filters.category.toLowerCase()
+    );
+  }
+
+  // Sorting
+  const sortBy = filters.sortBy || 'relevant';
+  matched.sort((a, b) => {
+    if (sortBy === 'priceAsc') return a.price - b.price;
+    if (sortBy === 'priceDesc') return b.price - a.price;
+    if (sortBy === 'rating') return (b.rating || 0) - (a.rating || 0);
+    if (sortBy === 'discount') return (b.discountPercent || 0) - (a.discountPercent || 0);
+
+    // Default 'relevant'
+    const scoreA = results.find((item) => item.product.id === a.id)?.score || 0;
+    const scoreB = results.find((item) => item.product.id === b.id)?.score || 0;
+    if (scoreB !== scoreA) return scoreB - scoreA;
+    return (b.rating || 0) - (a.rating || 0);
+  });
+
+  return matched;
+}
+

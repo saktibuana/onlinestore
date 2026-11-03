@@ -30,6 +30,8 @@ function akamaiEdgeSimulatorPlugin() {
           req.url = req.url.replace('/profile', '/profile.html');
         } else if (req.url === '/address' || req.url.startsWith('/address?')) {
           req.url = req.url.replace('/address', '/address.html');
+        } else if (req.url === '/store' || req.url.startsWith('/store?') || req.url.startsWith('/store/')) {
+          req.url = req.url.replace('/store', '/store.html');
         }
 
         // Simulate Akamai Edge CDN headers on page/asset responses
@@ -72,6 +74,7 @@ export default defineConfig({
       'notifications.html',
       'bank-accounts.html',
       'payment-settings.html',
+      'store.html',
       'offline.html',
       'src/**/*.{js,jsx}'
     ],
@@ -129,6 +132,7 @@ export default defineConfig({
         notifications: resolve(import.meta.dirname, 'notifications.html'),
         bankAccounts: resolve(import.meta.dirname, 'bank-accounts.html'),
         paymentSettings: resolve(import.meta.dirname, 'payment-settings.html'),
+        store: resolve(import.meta.dirname, 'store.html'),
         offline: resolve(import.meta.dirname, 'offline.html')
       }
     }
