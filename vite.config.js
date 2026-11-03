@@ -56,6 +56,9 @@ export default defineConfig({
       'cart.html',
       'profile.html',
       'address.html',
+      'notifications.html',
+      'bank-accounts.html',
+      'payment-settings.html',
       'offline.html',
       'src/**/*.{js,jsx}'
     ],
@@ -110,6 +113,9 @@ export default defineConfig({
         cart: resolve(import.meta.dirname, 'cart.html'),
         profile: resolve(import.meta.dirname, 'profile.html'),
         address: resolve(import.meta.dirname, 'address.html'),
+        notifications: resolve(import.meta.dirname, 'notifications.html'),
+        bankAccounts: resolve(import.meta.dirname, 'bank-accounts.html'),
+        paymentSettings: resolve(import.meta.dirname, 'payment-settings.html'),
         offline: resolve(import.meta.dirname, 'offline.html')
       }
     }

@@ -541,9 +541,9 @@ export default function Profile() {
             <TabNav>
               <a href="/profile.html" className="active">Biodata Diri</a>
               <a href="/address.html">Daftar Alamat</a>
-              <a href="#" onClick={(e) => { e.preventDefault(); showToast('Menu Pembayaran aktif'); }}>Pembayaran</a>
-              <a href="#" onClick={(e) => { e.preventDefault(); showToast('Menu Rekening Bank aktif'); }}>Rekening Bank</a>
-              <a href="#" onClick={(e) => { e.preventDefault(); showToast('Menu Notifikasi aktif'); }}>Notifikasi</a>
+              <a href="/payment-settings.html">Pembayaran</a>
+              <a href="/bank-accounts.html">Rekening Bank</a>
+              <a href="/notifications.html">Notifikasi</a>
               <a href="#" onClick={(e) => { e.preventDefault(); showToast('Mode Tampilan Standar'); }}>Mode Tampilan</a>
               <a href="#" onClick={(e) => { e.preventDefault(); showToast('Keamanan Akun Terproteksi'); }}>Keamanan</a>
             </TabNav>

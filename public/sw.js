@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tokopedia-edge-v3.1';
+const CACHE_NAME = 'tokopedia-edge-v3.2';
 const OFFLINE_URL = '/offline.html';
 
 const STATIC_ASSETS = [
@@ -9,6 +9,9 @@ const STATIC_ASSETS = [
   '/cart.html',
   '/profile.html',
   '/address.html',
+  '/notifications.html',
+  '/bank-accounts.html',
+  '/payment-settings.html',
   '/offline.html',
   '/manifest.json',
   '/icons/tokopedia-logo.svg'
