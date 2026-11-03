@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tokopedia-edge-v1.4';
+const CACHE_NAME = 'tokopedia-edge-v3.3';
 const OFFLINE_URL = '/offline.html';
 
 const STATIC_ASSETS = [
@@ -7,52 +7,75 @@ const STATIC_ASSETS = [
   '/pdp.html',
   '/search.html',
   '/cart.html',
+  '/profile.html',
+  '/address.html',
+  '/notifications.html',
+  '/bank-accounts.html',
+  '/payment-settings.html',
+  '/store.html',
   '/offline.html',
   '/manifest.json',
   '/icons/tokopedia-logo.svg'
 ];
 
-// Install: Pre-cache core app shell & offline page
+// Install: Pre-cache core shell
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      console.log('[Tokopedia Service Worker] Pre-caching static assets & offline shell');
-      return cache.addAll(STATIC_ASSETS).catch((err) => {
-        console.warn('[Tokopedia SW] Pre-cache partial warning:', err);
-      });
-    }).then(() => self.skipWaiting())
-  );
+  self.skipWaiting();
+  const isLocalDev = self.location.hostname === 'localhost' || self.location.hostname === '127.0.0.1';
+  if (!isLocalDev) {
+    event.waitUntil(
+      caches.open(CACHE_NAME).then((cache) => {
+        return cache.addAll(STATIC_ASSETS).catch((err) => {
+          console.warn('[Tokopedia SW] Pre-cache notice:', err);
+        });
+      })
+    );
+  }
 });
 
-// Activate: Clean old caches & claim clients
+// Activate: Completely purge old caches & claim clients immediately
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((name) => {
-          if (name !== CACHE_NAME) {
-            console.log('[Tokopedia SW] Removing outdated cache:', name);
-            return caches.delete(name);
-          }
-        })
-      );
+    caches.keys().then((keys) => {
+      return Promise.all(keys.map((k) => {
+        console.log('[Tokopedia SW] Evicting cache bucket:', k);
+        return caches.delete(k);
+      }));
     }).then(() => self.clients.claim())
   );
 });
 
-// Fetch: Strategy depending on request type
+// Fetch: Strategy depending on environment & request type
 self.addEventListener('fetch', (event) => {
   const req = event.request;
+
+  // 1. Only handle HTTP/HTTPS GET requests
+  if (!req.url.startsWith('http') || req.method !== 'GET') {
+    return;
+  }
+
   const url = new URL(req.url);
 
-  // HTML Navigation requests: Network-First with Offline Fallback
+  // 2. In local development (localhost), bypass Service Worker fetch handling
+  // to prevent stale chunk caching and Vite HMR dispatcher desynchronization.
+  if (self.location.hostname === 'localhost' || self.location.hostname === '127.0.0.1') {
+    return;
+  }
+
+  // 3. Never intercept external third-party requests (Criteo, GTM, GA4, Branch, CDNs)
+  if (url.origin !== self.location.origin) {
+    return;
+  }
+
+  // 4. HTML Navigation requests: Network-First with Offline Fallback
   if (req.mode === 'navigate') {
     event.respondWith(
       fetch(req)
         .then((response) => {
-          // Clone and update cache
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+          if (response && response.status === 200) {
+            const copy = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(req, copy)).catch(() => {});
+          }
           return response;
         })
         .catch(() => {
@@ -64,52 +87,27 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Akamai Edge & Static Images: Stale-While-Revalidate or Cache-First
-  if (
-    url.pathname.includes('/images/') ||
-    url.pathname.endsWith('.png') ||
-    url.pathname.endsWith('.jpg') ||
-    url.pathname.endsWith('.webp') ||
-    url.pathname.endsWith('.svg') ||
-    url.searchParams.has('ak-w')
-  ) {
-    event.respondWith(
-      caches.match(req).then((cachedResponse) => {
-        if (cachedResponse) return cachedResponse;
-        return fetch(req).then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200) {
-            const clone = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(req, clone));
-          }
-          return networkResponse;
-        }).catch(() => {
-          // Optional SVG placeholder fallback
-          return caches.match('/icons/tokopedia-logo.svg');
-        });
-      })
-    );
-    return;
-  }
-
-  // Scripts, Vite bundles & Styles: Stale-While-Revalidate
+  // 5. Static production assets: Stale-While-Revalidate with guaranteed Response
   event.respondWith(
     caches.match(req).then((cachedResponse) => {
       const fetchPromise = fetch(req)
         .then((networkResponse) => {
           if (networkResponse && networkResponse.status === 200) {
             const clone = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(req, clone));
+            caches.open(CACHE_NAME).then((cache) => cache.put(req, clone)).catch(() => {});
           }
           return networkResponse;
         })
-        .catch(() => cachedResponse);
+        .catch(() => {
+          return cachedResponse || new Response('', { status: 408, statusText: 'Request Timeout' });
+        });
 
       return cachedResponse || fetchPromise;
     })
   );
 });
 
-// Push notification event for Tokopedia promos
+// Push notification event
 self.addEventListener('push', (event) => {
   const data = event.data ? event.data.json() : {
     title: 'Tokopedia Promo Asyik!',
