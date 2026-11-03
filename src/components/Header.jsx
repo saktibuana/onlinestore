@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
-import loadable from '@loadable/component';
+import loadable from '../utils/loadable';
 import { Search, ShoppingCart, Bell, Mail, ChevronDown, Smartphone, Store, ShieldCheck } from 'lucide-react';
 import { cartService } from '../services/cartService';
 import { analytics } from '../services/analytics';

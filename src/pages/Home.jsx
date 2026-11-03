@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
-import loadable from '@loadable/component';
+import loadable from '../utils/loadable';
 import Header from '../components/Header';
 import FeatureCardsSection from '../components/FeatureCardsSection';
 import QuickCategoryBar from '../components/QuickCategoryBar';

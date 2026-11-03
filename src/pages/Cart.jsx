@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
-import loadable from '@loadable/component';
+import loadable from '../utils/loadable';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import ErrorBoundary from '../components/ErrorBoundary';
 import { cartService } from '../services/cartService';
 import { analytics } from '../services/analytics';
 import { gtm } from '../services/gtm';
@@ -408,7 +409,9 @@ export default function Cart() {
 
   return (
     <div>
-      <Header />
+      <ErrorBoundary fallback={<div style={{ height: 60, borderBottom: '1px solid #E5E7EB', display: 'flex', alignItems: 'center', padding: '0 24px', justifyContent: 'space-between' }}><a href="/" style={{ fontWeight: 800, color: '#03AC0E', fontSize: 20 }}>tokopedia</a><a href="/" style={{ fontSize: 13, color: '#6D7588' }}>Kembali ke Beranda</a></div>}>
+        <Header />
+      </ErrorBoundary>
 
       <Container>
         <h1 style={{ fontSize: 20, fontWeight: 700, marginBottom: 20 }}>Keranjang Belanja</h1>

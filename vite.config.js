@@ -26,7 +26,6 @@ function akamaiEdgeSimulatorPlugin() {
         res.setHeader('X-Akamai-Pragma', 'akamai-x-cache-on, akamai-x-cache-remote-on, akamai-x-check-cacheable, akamai-x-get-cache-key');
         res.setHeader('X-Akamai-Edge-Server', 'akamai-cgk-id.edgekey.net');
         res.setHeader('X-Edge-Origin', 'tokopedia-origin-jakarta');
-        // Prevent stale browser caching during dev HMR
         res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
         next();
       });
@@ -50,12 +49,30 @@ export default defineConfig({
     ]
   },
   optimizeDeps: {
+    entries: [
+      'index.html',
+      'pdp.html',
+      'search.html',
+      'cart.html',
+      'offline.html',
+      'src/**/*.{js,jsx}'
+    ],
     include: [
       'react',
+      'react/jsx-runtime',
+      'react/jsx-dev-runtime',
       'react-dom',
       'react-dom/client',
       '@emotion/react',
+      '@emotion/react/jsx-runtime',
+      '@emotion/react/jsx-dev-runtime',
       '@emotion/styled',
+      '@emotion/styled/base',
+      '@emotion/css',
+      '@emotion/cache',
+      '@emotion/serialize',
+      '@emotion/utils',
+      '@emotion/is-prop-valid',
       'branch-sdk',
       'lucide-react'
     ]
@@ -64,6 +81,11 @@ export default defineConfig({
     port: 3000,
     open: false,
     strictPort: true,
+    headers: {
+      'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    },
     watch: {
       ignored: ['**/dist/**', '**/*corrupted*/**', '**/trash*/**']
     }

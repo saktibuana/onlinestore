@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { ThemeProvider, Global, css } from '@emotion/react';
 import Home from './pages/Home';
 import { theme } from './theme/tokopediaTheme';
+import ErrorBoundary from './components/ErrorBoundary';
 
 const globalStyles = css`
   *, *::before, *::after {
@@ -33,9 +34,11 @@ const globalStyles = css`
 const root = createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <Global styles={globalStyles} />
-      <Home />
-    </ThemeProvider>
+    <ErrorBoundary>
+      <ThemeProvider theme={theme}>
+        <Global styles={globalStyles} />
+        <Home />
+      </ThemeProvider>
+    </ErrorBoundary>
   </React.StrictMode>
 );

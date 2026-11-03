@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tokopedia-edge-v2.0';
+const CACHE_NAME = 'tokopedia-edge-v3.0';
 const OFFLINE_URL = '/offline.html';
 
 const STATIC_ASSETS = [
@@ -12,36 +12,34 @@ const STATIC_ASSETS = [
   '/icons/tokopedia-logo.svg'
 ];
 
-// Install: Pre-cache core app shell & offline page
+// Install: Pre-cache core shell
 self.addEventListener('install', (event) => {
   self.skipWaiting();
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      console.log('[Tokopedia Service Worker] Pre-caching static assets & offline shell');
-      return cache.addAll(STATIC_ASSETS).catch((err) => {
-        console.warn('[Tokopedia SW] Pre-cache partial notice:', err);
-      });
-    })
-  );
+  const isLocalDev = self.location.hostname === 'localhost' || self.location.hostname === '127.0.0.1';
+  if (!isLocalDev) {
+    event.waitUntil(
+      caches.open(CACHE_NAME).then((cache) => {
+        return cache.addAll(STATIC_ASSETS).catch((err) => {
+          console.warn('[Tokopedia SW] Pre-cache notice:', err);
+        });
+      })
+    );
+  }
 });
 
-// Activate: Clean all outdated caches and claim clients immediately
+// Activate: Completely purge old caches & claim clients immediately
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((name) => {
-          if (name !== CACHE_NAME) {
-            console.log('[Tokopedia SW] Removing outdated cache:', name);
-            return caches.delete(name);
-          }
-        })
-      );
+    caches.keys().then((keys) => {
+      return Promise.all(keys.map((k) => {
+        console.log('[Tokopedia SW] Evicting cache bucket:', k);
+        return caches.delete(k);
+      }));
     }).then(() => self.clients.claim())
   );
 });
 
-// Fetch: Strategy depending on request type
+// Fetch: Strategy depending on environment & request type
 self.addEventListener('fetch', (event) => {
   const req = event.request;
 
@@ -52,21 +50,14 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(req.url);
 
-  // 2. Never intercept external requests (Criteo, GTM, GA4, Branch, CDNs, extensions)
-  if (url.origin !== self.location.origin) {
+  // 2. In local development (localhost), bypass Service Worker fetch handling
+  // to prevent stale chunk caching and Vite HMR dispatcher desynchronization.
+  if (self.location.hostname === 'localhost' || self.location.hostname === '127.0.0.1') {
     return;
   }
 
-  // 3. Never intercept Vite development internals, HMR, or dynamic source modules
-  // Caching these breaks hot reloading and poisons browser cache with stale React dispatchers
-  if (
-    url.pathname.startsWith('/@') ||
-    url.pathname.startsWith('/src/') ||
-    url.pathname.startsWith('/node_modules/') ||
-    url.searchParams.has('v') ||
-    url.searchParams.has('t') ||
-    url.searchParams.has('token')
-  ) {
+  // 3. Never intercept external third-party requests (Criteo, GTM, GA4, Branch, CDNs)
+  if (url.origin !== self.location.origin) {
     return;
   }
 
@@ -90,7 +81,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 5. Static production assets (assets, icons, etc.): Stale-While-Revalidate with guaranteed Response
+  // 5. Static production assets: Stale-While-Revalidate with guaranteed Response
   event.respondWith(
     caches.match(req).then((cachedResponse) => {
       const fetchPromise = fetch(req)
@@ -110,7 +101,7 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
-// Push notification event for Tokopedia promos
+// Push notification event
 self.addEventListener('push', (event) => {
   const data = event.data ? event.data.json() : {
     title: 'Tokopedia Promo Asyik!',
