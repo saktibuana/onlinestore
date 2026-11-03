@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" fill="none">
+  <!-- Tokopedia Green Bag / Owl Body -->
+  <rect width="240" height="240" rx="48" fill="#03AC0E"/>
+  <path d="M120 42C90 42 74 60 74 86V92H166V86C166 60 150 42 120 42Z" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- Bag Body Outline -->
+  <path d="M50 88H190L178 194C176 204 168 212 158 212H82C72 212 64 204 62 194L50 88Z" fill="#FFFFFF"/>
+  <!-- Owl Left Eye -->
+  <circle cx="95" cy="135" r="26" fill="#03AC0E"/>
+  <circle cx="95" cy="135" r="16" fill="#FFFFFF"/>
+  <circle cx="98" cy="132" r="9" fill="#212121"/>
+  <circle cx="94" cy="128" r="3" fill="#FFFFFF"/>
+  <!-- Owl Right Eye -->
+  <circle cx="145" cy="135" r="26" fill="#03AC0E"/>
+  <circle cx="145" cy="135" r="16" fill="#FFFFFF"/>
+  <circle cx="148" cy="132" r="9" fill="#212121"/>
+  <circle cx="144" cy="128" r="3" fill="#FFFFFF"/>
+  <!-- Owl Beak (Orange) -->
+  <polygon points="120,148 112,160 128,160" fill="#FA591D"/>
+</svg>

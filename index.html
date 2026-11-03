@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="/icons/tokopedia-logo.svg" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#03AC0E" />
+
+  <!-- OpenGraph Metadata -->
+  <title>Situs Jual Beli Online Terlengkap, Mudah & Aman | Tokopedia</title>
+  <meta name="description" content="Situs jual beli online terlengkap dengan promo belanja hemat setiap hari di Tokopedia. Nikmati Bebas Ongkir se-Indonesia dan jutaan produk berkualitas." />
+  <meta property="og:title" content="Tokopedia: Jual Beli Online Mudah & Terpercaya" />
+  <meta property="og:description" content="Temukan jutaan produk pilihan, diskon kilat, dan Bebas Ongkir hanya di Tokopedia!" />
+  <meta property="og:image" content="/icons/tokopedia-logo.svg" />
+  <meta property="og:url" content="https://www.tokopedia.com/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Tokopedia" />
+
+  <!-- Twitter Card Metadata -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@tokopedia" />
+  <meta name="twitter:title" content="Tokopedia: Jual Beli Online Mudah & Terpercaya" />
+  <meta name="twitter:description" content="Belanja hemat, mudah, dan aman dengan jutaan produk terlengkap di Tokopedia." />
+  <meta name="twitter:image" content="/icons/tokopedia-logo.svg" />
+
+  <!-- Google Tag Manager Snippet -->
+  <script>
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-TKPD988');
+  </script>
+
+  <!-- Google Analytics 4 (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKPD4892GA4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-TKPD4892GA4');
+  </script>
+
+  <!-- Criteo OneTag Snippet -->
+  <script type="text/javascript" src="//static.criteo.net/js/ld/ld.js" async="true"></script>
+  <script>
+    window.criteo_q = window.criteo_q || [];
+    window.criteo_q.push({ event: "setAccount", account: 104829 });
+    window.criteo_q.push({ event: "setSiteType", type: "d" });
+  </script>
+
+  <!-- Akamai mPulse Boomerang RUM Simulation -->
+  <script>
+    window.BOOMR = window.BOOMR || {};
+    window.BOOMR.version = "1.738.0";
+    window.BOOMR.akamaiEdge = "cgk-id-edge-worker-01";
+  </script>
+</head>
+<body>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript>
+    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TKPD988" height="0" width="0" style="display:none;visibility:hidden"></iframe>
+  </noscript>
+
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js').then(function(reg) {
+          console.log('[Tokopedia PWA] Service Worker registered:', reg.scope);
+        }).catch(function(err) {
+          console.warn('[Tokopedia PWA] SW registration note:', err);
+        });
+      });
+    }
+  </script>
+</body>
+</html>
