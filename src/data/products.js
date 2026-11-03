@@ -684,6 +684,7 @@ export const products = [
     cashbackPercent: 5,
     stock: 420,
     description: 'Kemeja pria casual berbahan kain katun Oxford premium yang berpori halus dan dingin di badan. Tidak mudah kusut dan berpotongan slim-fit maskulin.',
+    tags: ['kemeja', 'baju', 'pakaian', 'fashion-pria', 'atasan', 'kasual'],
     specs: [
       { label: 'Bahan', value: 'Katun Oxford Import' },
       { label: 'Kancing', value: 'Embossed Resin Pearl' }
@@ -691,6 +692,154 @@ export const products = [
     variants: [
       { id: 'v1', name: 'Ukuran', options: ['M', 'L', 'XL'] },
       { id: 'v2', name: 'Warna', options: ['Putih Bersih', 'Biru Muda Oxford', 'Abu-Abu', 'Hitam'] }
+    ]
+  },
+  {
+    id: 'prod-019',
+    title: 'Meja Kerja Minimalis Modern 120cm Rangka Besi Meja Komputer Laptop Kantor',
+    slug: 'meja-kerja-minimalis-modern-120cm',
+    price: 349000,
+    originalPrice: 699000,
+    discountPercent: 50,
+    rating: 4.9,
+    reviewsCount: 1820,
+    soldCount: '3.4rb+',
+    category: 'home',
+    categoryName: 'Kebutuhan Rumah',
+    brand: 'Pira Home',
+    image: 'https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd',
+    images: ['https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd'],
+    shop: {
+      name: 'Pira Official Store',
+      location: 'Kota Surabaya',
+      isOfficial: true,
+      isPowerMerchant: false,
+      rating: 4.9,
+      badge: 'Official Store'
+    },
+    hasFreeShipping: true,
+    hasCashback: true,
+    cashbackPercent: 5,
+    stock: 190,
+    description: 'Meja kerja modern minimalis dengan top table kayu tebal bermotif serat kayu alami tahan gores dan rangka kaki besi hollow kokoh dilapisi powder coating anti-karat.',
+    tags: ['meja', 'meja-kerja', 'meja-kantor', 'meja-komputer', 'furniture'],
+    specs: [
+      { label: 'Dimensi', value: '120 x 60 x 75 cm' },
+      { label: 'Material', value: 'PB Grade A + Powder Coated Steel' }
+    ],
+    variants: [
+      { id: 'v1', name: 'Warna', options: ['Sonoma Oak', 'White Glossy', 'Walnut Dark'] }
+    ]
+  },
+  {
+    id: 'prod-020',
+    title: 'Meja Gaming Ergonomis RGB Carbon Fiber Z-Shape Meja Komputer PC Studio',
+    slug: 'meja-gaming-ergonomis-rgb-carbon-z-shape',
+    price: 899000,
+    originalPrice: 1500000,
+    discountPercent: 40,
+    rating: 4.8,
+    reviewsCount: 740,
+    soldCount: '950+',
+    category: 'home',
+    categoryName: 'Kebutuhan Rumah',
+    brand: 'Fantech Living',
+    image: 'https://images.unsplash.com/photo-1544457070-4cd773b4d71e',
+    images: ['https://images.unsplash.com/photo-1544457070-4cd773b4d71e'],
+    shop: {
+      name: 'Fantech Official Store',
+      location: 'Kota Jakarta Utara',
+      isOfficial: true,
+      isPowerMerchant: false,
+      rating: 4.9,
+      badge: 'Official Store'
+    },
+    hasFreeShipping: true,
+    hasCashback: true,
+    cashbackPercent: 10,
+    stock: 85,
+    description: 'Meja gaming berdesain futuristik dengan permukaan carbon fiber anti-slip dan lampu LED RGB dinamis. Rangka Z-shape baja tebal memberikan kestabilan maksimal untuk setup multi-monitor.',
+    tags: ['meja', 'meja-gaming', 'meja-komputer', 'gaming-desk', 'rgb'],
+    specs: [
+      { label: 'Dimensi', value: '120 x 60 x 75 cm' },
+      { label: 'Fitur', value: 'RGB Lighting, Headphone Hook, Cup Holder' }
+    ],
+    variants: [
+      { id: 'v1', name: 'Warna', options: ['Black Carbon RGB', 'White Carbon RGB'] }
+    ]
+  },
+  {
+    id: 'prod-021',
+    title: 'Meja Rias Minimalis Kaca Lampu LED Touchscreen Meja Make Up Kayu Solid',
+    slug: 'meja-rias-minimalis-kaca-lampu-led',
+    price: 575000,
+    originalPrice: 1150000,
+    discountPercent: 50,
+    rating: 4.9,
+    reviewsCount: 1120,
+    soldCount: '1.8rb+',
+    category: 'home',
+    categoryName: 'Kebutuhan Rumah',
+    brand: 'Informa Wood',
+    image: 'https://images.unsplash.com/photo-1538688525198-9b88f6f53126',
+    images: ['https://images.unsplash.com/photo-1538688525198-9b88f6f53126'],
+    shop: {
+      name: 'Informa Home Living',
+      location: 'Kota Tangerang Selatan',
+      isOfficial: true,
+      isPowerMerchant: false,
+      rating: 4.9,
+      badge: 'Official Store'
+    },
+    hasFreeShipping: true,
+    hasCashback: true,
+    cashbackPercent: 5,
+    stock: 140,
+    description: 'Meja rias cantik dengan cermin bundar berlampu LED 3 mode pencahayaan (Warm, Cool, Natural) dengan tombol sentuh. Dilengkapi laci penyimpanan kosmetik dan kursi empuk senada.',
+    tags: ['meja', 'meja-rias', 'meja-makeup', 'dresser', 'furniture'],
+    specs: [
+      { label: 'Dimensi', value: '80 x 40 x 128 cm' },
+      { label: 'Cermin', value: 'LED Touch Sensor 3 Warna' }
+    ],
+    variants: [
+      { id: 'v1', name: 'Warna', options: ['Putih Bersih', 'Creamy Beige', 'Pink Pastel'] }
+    ]
+  },
+  {
+    id: 'prod-022',
+    title: 'Meja Makan Minimalis Kayu Jati Belanda 4 Kursi Set Meja Cafe Resto',
+    slug: 'meja-makan-minimalis-kayu-jati-belanda-set',
+    price: 1250000,
+    originalPrice: 2500000,
+    discountPercent: 50,
+    rating: 5.0,
+    reviewsCount: 390,
+    soldCount: '620+',
+    category: 'home',
+    categoryName: 'Kebutuhan Rumah',
+    brand: 'Jepara Living',
+    image: 'https://images.unsplash.com/photo-1615066390971-03e4e1c36ddf',
+    images: ['https://images.unsplash.com/photo-1615066390971-03e4e1c36ddf'],
+    shop: {
+      name: 'Jepara Furniture Official',
+      location: 'Kab. Jepara',
+      isOfficial: true,
+      isPowerMerchant: false,
+      rating: 5.0,
+      badge: 'Official Store'
+    },
+    hasFreeShipping: true,
+    hasCashback: true,
+    cashbackPercent: 5,
+    stock: 60,
+    description: 'Satu set meja makan 4 kursi berbahan kayu pinus jati belanda oven solid. Finishing natural gloss tahan tumpahan air dan panas, sangat kokoh untuk ruang makan keluarga maupun cafe.',
+    tags: ['meja', 'meja-makan', 'set-meja', 'dining-table', 'kayu-jati'],
+    specs: [
+      { label: 'Dimensi Meja', value: '120 x 70 x 75 cm' },
+      { label: 'Jumlah Kursi', value: '4 Kursi Sandaran Solid' }
+    ],
+    variants: [
+      { id: 'v1', name: 'Finishing', options: ['Natural Gloss', 'Dark Mahogany', 'Rustic Brown'] }
     ]
   }
 ];

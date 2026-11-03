@@ -5,6 +5,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ProductCard from '../components/ProductCard';
 import { products } from '../data/products';
+import { searchProducts } from '../utils/searchEngine';
 import { analytics } from '../services/analytics';
 import { gtm } from '../services/gtm';
 import { criteo } from '../services/criteo';
@@ -171,49 +172,13 @@ export default function Search() {
   }, [searchQuery]);
 
   const filteredItems = useMemo(() => {
-    let result = [...products];
-
-    // Search query filter
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      result = result.filter(
-        (p) =>
-          p.title.toLowerCase().includes(q) ||
-          p.categoryName?.toLowerCase().includes(q) ||
-          p.brand?.toLowerCase().includes(q)
-      );
-    }
-
-    // Category filter
-    if (initialCat) {
-      result = result.filter((p) => p.category === initialCat);
-    }
-
-    // Official store filter
-    if (filterOfficialOnly) {
-      result = result.filter((p) => p.shop?.isOfficial);
-    }
-
-    // Free shipping filter
-    if (filterFreeShipping) {
-      result = result.filter((p) => p.hasFreeShipping);
-    }
-
-    // Rating filter
-    if (filterRating4Plus) {
-      result = result.filter((p) => p.rating >= 4.8);
-    }
-
-    // Sorting
-    if (sortBy === 'lowest') {
-      result.sort((a, b) => a.price - b.price);
-    } else if (sortBy === 'highest') {
-      result.sort((a, b) => b.price - a.price);
-    } else if (sortBy === 'rating') {
-      result.sort((a, b) => b.rating - a.rating);
-    }
-
-    return result;
+    return searchProducts(products, searchQuery, {
+      category: initialCat,
+      officialOnly: filterOfficialOnly,
+      freeShippingOnly: filterFreeShipping,
+      minRating: filterRating4Plus ? 4.8 : 0,
+      sortBy: sortBy === 'lowest' ? 'lowestPrice' : sortBy === 'highest' ? 'highestPrice' : sortBy === 'rating' ? 'highestRating' : 'relevant'
+    });
   }, [searchQuery, initialCat, filterOfficialOnly, filterFreeShipping, filterRating4Plus, sortBy]);
 
   return (
