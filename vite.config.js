@@ -19,6 +19,19 @@ function akamaiEdgeSimulatorPlugin() {
           return next();
         }
 
+        // Clean URL rewriting for MPA routes (e.g. /search?q=meja -> /search.html?q=meja)
+        if (req.url === '/search' || req.url.startsWith('/search?')) {
+          req.url = req.url.replace('/search', '/search.html');
+        } else if (req.url === '/cart' || req.url.startsWith('/cart?')) {
+          req.url = req.url.replace('/cart', '/cart.html');
+        } else if (req.url === '/pdp' || req.url.startsWith('/pdp?')) {
+          req.url = req.url.replace('/pdp', '/pdp.html');
+        } else if (req.url === '/profile' || req.url.startsWith('/profile?')) {
+          req.url = req.url.replace('/profile', '/profile.html');
+        } else if (req.url === '/address' || req.url.startsWith('/address?')) {
+          req.url = req.url.replace('/address', '/address.html');
+        }
+
         // Simulate Akamai Edge CDN headers on page/asset responses
         res.setHeader('Edge-Control', 'cache-maxage=86400, stale-while-revalidate=604800');
         res.setHeader('Akamai-Cache-Status', 'HIT (CGK-Edge-Node-01)');

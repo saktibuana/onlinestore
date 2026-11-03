@@ -332,8 +332,9 @@ export default function Header({ activeQuery = '' }) {
     analytics.trackSearch(searchQuery, 18);
     gtm.pushEvent('search_submit', { search_term: searchQuery });
 
-    // Navigate to Search MPA page
-    window.location.href = `/search.html?q=${encodeURIComponent(searchQuery)}`;
+    // Navigate to Search MPA page with authentic Tokopedia SRP parameters
+    const srpUrl = `/search.html?st=&q=${encodeURIComponent(searchQuery.trim())}&srp_component_id=02.01.00.00&srp_page_id=&srp_page_title=&navsource=`;
+    window.location.href = srpUrl;
   };
 
   return (
@@ -395,11 +396,11 @@ export default function Header({ activeQuery = '' }) {
               </SearchInputWrapper>
             </SearchForm>
             <QuickKeywords>
-              <a href="/search.html?q=Meja%20Belajar">Meja Belajar</a>
-              <a href="/search.html?q=Kaos%20Distro">Kaos Distro</a>
-              <a href="/search.html?q=Headset%20Gaming">Headset Gaming</a>
-              <a href="/search.html?q=Smartwatch">Smartwatch</a>
-              <a href="/search.html?q=Kursi%20Ergonomis">Kursi Ergonomis</a>
+              <a href="/search.html?st=&q=Meja%20Belajar&srp_component_id=02.01.00.00&srp_page_id=&srp_page_title=&navsource=">Meja Belajar</a>
+              <a href="/search.html?st=&q=Kaos%20Distro&srp_component_id=02.01.00.00&srp_page_id=&srp_page_title=&navsource=">Kaos Distro</a>
+              <a href="/search.html?st=&q=Headset%20Gaming&srp_component_id=02.01.00.00&srp_page_id=&srp_page_title=&navsource=">Headset Gaming</a>
+              <a href="/search.html?st=&q=Smartwatch&srp_component_id=02.01.00.00&srp_page_id=&srp_page_title=&navsource=">Smartwatch</a>
+              <a href="/search.html?st=&q=Kursi%20Ergonomis&srp_component_id=02.01.00.00&srp_page_id=&srp_page_title=&navsource=">Kursi Ergonomis</a>
             </QuickKeywords>
           </div>
 

@@ -208,7 +208,21 @@ const HoverActions = styled.div`
   }
 `;
 
-export default function ProductCard({ product, onQuickView }) {
+const AdBadge = styled.span`
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background-color: rgba(33, 33, 33, 0.65);
+  color: #FFFFFF;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+  z-index: 2;
+  letter-spacing: 0.5px;
+`;
+
+export default function ProductCard({ product, onQuickView, isAd = false }) {
   const [added, setAdded] = useState(false);
 
   // Akamai Image Manager URL transformation
@@ -250,6 +264,7 @@ export default function ProductCard({ product, onQuickView }) {
   return (
     <CardContainer onClick={handleCardClick}>
       <ImageWrapper>
+        {isAd && <AdBadge>Ad</AdBadge>}
         <img
           src={optimizedImage}
           alt={product.title}
