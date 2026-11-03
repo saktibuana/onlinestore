@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
 import loadable from '../utils/loadable';
-import { Search, ShoppingCart, Bell, Mail, ChevronDown, Smartphone, Store, ShieldCheck } from 'lucide-react';
+import { Search, ShoppingCart, Bell, Mail, ChevronDown, Smartphone, Store, ShieldCheck, MapPin } from 'lucide-react';
 import { cartService } from '../services/cartService';
 import { analytics } from '../services/analytics';
 import { gtm } from '../services/gtm';
+import { userService } from '../services/userService';
+import { addressService } from '../services/addressService';
 
 // Loadable Mega Menu Dropdown
 const MegaMenuDropdown = loadable(() => import('./MegaMenuDropdown'), {
@@ -271,16 +273,56 @@ const UserProfile = styled.a`
   }
 `;
 
+const DeliveryBar = styled.div`
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px 8px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+
+  a.loc-link {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #6D7588;
+    text-decoration: none;
+
+    strong {
+      color: #212121;
+      font-weight: 700;
+    }
+
+    &:hover {
+      color: #03AC0E;
+      strong { color: #03AC0E; }
+    }
+  }
+`;
+
 export default function Header({ activeQuery = '' }) {
   const [cartCount, setCartCount] = useState(cartService.getCount());
   const [showMegaMenu, setShowMegaMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState(activeQuery);
+  const [userProfile, setUserProfile] = useState(userService.getProfile());
+  const [activeAddress, setActiveAddress] = useState(addressService.getSelectedAddress());
 
   useEffect(() => {
-    const unsub = cartService.subscribe(({ count }) => {
+    const unsubCart = cartService.subscribe(({ count }) => {
       setCartCount(count);
     });
-    return unsub;
+    const unsubUser = userService.subscribe((profile) => {
+      setUserProfile(profile);
+    });
+    const unsubAddr = addressService.subscribe(({ selectedAddress }) => {
+      setActiveAddress(selectedAddress);
+    });
+    return () => {
+      unsubCart();
+      unsubUser();
+      unsubAddr();
+    };
   }, []);
 
   const handleSearchSubmit = (e) => {
@@ -302,15 +344,12 @@ export default function Header({ activeQuery = '' }) {
             <a href="#" onClick={(e) => { e.preventDefault(); alert('Aplikasi Tokopedia PWA siap diinstall di perangkat Anda.'); }}>
               <Smartphone size={14} /> Download Tokopedia App
             </a>
-            <a href="#">Mitra Tokopedia</a>
-            <a href="#">Mulai Berjualan</a>
-            <a href="#">Promo</a>
-            <a href="#">Tokopedia Care</a>
           </TopBarLeft>
           <TopBarRight>
             <a href="#">Tentang Tokopedia</a>
-            <a href="#">Hak Kekayaan Intelektual</a>
-            <a href="#">Karir</a>
+            <a href="#">Pusat Edukasi Seller</a>
+            <a href="#">Promo</a>
+            <a href="#">Tokopedia Care</a>
           </TopBarRight>
         </TopBarContainer>
       </TopBar>
@@ -370,29 +409,42 @@ export default function Header({ activeQuery = '' }) {
               {cartCount > 0 && <span className="badge">{cartCount}</span>}
             </IconButton>
 
-            <IconButton href="#" onClick={(e) => { e.preventDefault(); alert('Tidak ada notifikasi baru.'); }} aria-label="Notifikasi">
+            <IconButton href="#" onClick={(e) => { e.preventDefault(); alert('Notifikasi Tokopedia.'); }} aria-label="Notifikasi">
               <Bell size={22} />
+              <span className="badge" style={{ backgroundColor: '#FF5722' }}>{userProfile.unreadNotifications || 4}</span>
             </IconButton>
 
-            <IconButton href="#" onClick={(e) => { e.preventDefault(); alert('Pesan obrolan Tokopedia siap.'); }} aria-label="Pesan">
+            <IconButton href="#" onClick={(e) => { e.preventDefault(); alert('Pesan Obrolan Tokopedia.'); }} aria-label="Pesan">
               <Mail size={22} />
+              <span className="badge" style={{ backgroundColor: '#FF5722' }}>{userProfile.unreadMessages || 4}</span>
             </IconButton>
 
             <Divider />
 
-            <SellerLink href="#" onClick={(e) => { e.preventDefault(); alert('Buka Toko Gratis di Tokopedia.'); }}>
-              <Store size={18} color="#03AC0E" /> Toko
+            <SellerLink href="#" onClick={(e) => { e.preventDefault(); alert(`Buka Toko: ${userProfile.storeName}`); }}>
+              <div style={{ width: 22, height: 22, borderRadius: '50%', background: '#03AC0E', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 11, fontWeight: 700 }}>
+                B
+              </div>
+              <span>{userProfile.storeName || "Buana's Inve..."}</span>
             </SellerLink>
 
-            <UserProfile href="#" onClick={(e) => { e.preventDefault(); alert('Profil Pengguna Tokopedia terverifikasi.'); }}>
+            <UserProfile href="/profile.html">
               <img
-                src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=60&h=60&fit=crop"
-                alt="Pengguna"
+                src={userProfile.avatar || "/images/profile-sakti.jpg"}
+                alt={userProfile.name}
               />
-              <span>At-Tibyan</span>
+              <span>{userProfile.displayName || "Sakti"}</span>
             </UserProfile>
           </ActionsContainer>
         </HeaderContainer>
+
+        <DeliveryBar>
+          <a href="/address.html" className="loc-link" title="Ganti Alamat Pengiriman">
+            <MapPin size={13} color="#6D7588" />
+            <span>Dikirim ke <strong>{activeAddress ? `${activeAddress.title} ${activeAddress.recipient}` : 'Gedung SD At Tibyan BQS Hikmatullah Sakti Buana'}</strong></span>
+            <ChevronDown size={13} />
+          </a>
+        </DeliveryBar>
 
         {showMegaMenu && (
           <MegaMenuDropdown onClose={() => setShowMegaMenu(false)} />

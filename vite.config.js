@@ -54,6 +54,8 @@ export default defineConfig({
       'pdp.html',
       'search.html',
       'cart.html',
+      'profile.html',
+      'address.html',
       'offline.html',
       'src/**/*.{js,jsx}'
     ],
@@ -106,6 +108,8 @@ export default defineConfig({
         pdp: resolve(import.meta.dirname, 'pdp.html'),
         search: resolve(import.meta.dirname, 'search.html'),
         cart: resolve(import.meta.dirname, 'cart.html'),
+        profile: resolve(import.meta.dirname, 'profile.html'),
+        address: resolve(import.meta.dirname, 'address.html'),
         offline: resolve(import.meta.dirname, 'offline.html')
       }
     }
