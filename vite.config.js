@@ -23,6 +23,12 @@ function akamaiEdgeSimulatorPlugin() {
 }
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      '@loadable/component': resolve(import.meta.dirname, 'src/utils/loadable.jsx')
+    },
+    dedupe: ['react', 'react-dom']
+  },
   plugins: [
     react({
       jsxImportSource: '@emotion/react',

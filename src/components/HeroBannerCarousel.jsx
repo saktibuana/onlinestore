@@ -256,12 +256,12 @@ export default function HeroBannerCarousel() {
                   <rect x="50" y="110" width="90" height="90" rx="8" fill="#FA591D" />
                   <rect x="88" y="110" width="14" height="90" fill="#FFE082" />
                   <rect x="50" y="148" width="90" height="14" fill="#FFE082" />
-                  <path d="M75 110C65 95 85 85 95 105C105 85 125 95 115 110" stroke="#FFE082" stroke-width="6" fill="none"/>
+                  <path d="M75 110C65 95 85 85 95 105C105 85 125 95 115 110" stroke="#FFE082" strokeWidth="6" fill="none"/>
 
                   {/* Gold Coins */}
-                  <circle cx="160" cy="180" r="18" fill="#FFD700" stroke="#FFA000" stroke-width="3" />
-                  <text x="155" y="186" font-size="16" font-weight="bold" fill="#E65100">Rp</text>
-                  <circle cx="45" cy="185" r="14" fill="#FFD700" stroke="#FFA000" stroke-width="2.5" />
+                  <circle cx="160" cy="180" r="18" fill="#FFD700" stroke="#FFA000" strokeWidth="3" />
+                  <text x="155" y="186" fontSize="16" fontWeight="bold" fill="#E65100">Rp</text>
+                  <circle cx="45" cy="185" r="14" fill="#FFD700" stroke="#FFA000" strokeWidth="2.5" />
 
                   {/* Primary Tokopedia Owl Mascot (Toped) */}
                   <g transform="translate(170, 40)">

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tokopedia-edge-v1.4';
+const CACHE_NAME = 'tokopedia-edge-v1.5';
 const OFFLINE_URL = '/offline.html';
 
 const STATIC_ASSETS = [
@@ -18,13 +18,13 @@ self.addEventListener('install', (event) => {
     caches.open(CACHE_NAME).then((cache) => {
       console.log('[Tokopedia Service Worker] Pre-caching static assets & offline shell');
       return cache.addAll(STATIC_ASSETS).catch((err) => {
-        console.warn('[Tokopedia SW] Pre-cache partial warning:', err);
+        console.warn('[Tokopedia SW] Pre-cache partial notice:', err);
       });
     }).then(() => self.skipWaiting())
   );
 });
 
-// Activate: Clean old caches & claim clients
+// Activate: Clean old caches & claim clients immediately
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -43,16 +43,30 @@ self.addEventListener('activate', (event) => {
 // Fetch: Strategy depending on request type
 self.addEventListener('fetch', (event) => {
   const req = event.request;
+
+  // 1. Only handle HTTP/HTTPS GET requests
+  if (!req.url.startsWith('http') || req.method !== 'GET') {
+    return;
+  }
+
   const url = new URL(req.url);
 
-  // HTML Navigation requests: Network-First with Offline Fallback
+  // 2. Only handle same-origin requests
+  // External analytics/tracking (Criteo, GTM, GA4, CDNs) pass through directly to the browser
+  // to avoid ad-blocker or network-switch promise rejections.
+  if (url.origin !== self.location.origin) {
+    return;
+  }
+
+  // 3. HTML Navigation requests: Network-First with Offline Fallback
   if (req.mode === 'navigate') {
     event.respondWith(
       fetch(req)
         .then((response) => {
-          // Clone and update cache
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
+          if (response && response.status === 200) {
+            const copy = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(req, copy)).catch(() => {});
+          }
           return response;
         })
         .catch(() => {
@@ -64,45 +78,21 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Akamai Edge & Static Images: Stale-While-Revalidate or Cache-First
-  if (
-    url.pathname.includes('/images/') ||
-    url.pathname.endsWith('.png') ||
-    url.pathname.endsWith('.jpg') ||
-    url.pathname.endsWith('.webp') ||
-    url.pathname.endsWith('.svg') ||
-    url.searchParams.has('ak-w')
-  ) {
-    event.respondWith(
-      caches.match(req).then((cachedResponse) => {
-        if (cachedResponse) return cachedResponse;
-        return fetch(req).then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200) {
-            const clone = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(req, clone));
-          }
-          return networkResponse;
-        }).catch(() => {
-          // Optional SVG placeholder fallback
-          return caches.match('/icons/tokopedia-logo.svg');
-        });
-      })
-    );
-    return;
-  }
-
-  // Scripts, Vite bundles & Styles: Stale-While-Revalidate
+  // 4. Same-origin static assets: Stale-While-Revalidate with guaranteed Response
   event.respondWith(
     caches.match(req).then((cachedResponse) => {
       const fetchPromise = fetch(req)
         .then((networkResponse) => {
           if (networkResponse && networkResponse.status === 200) {
             const clone = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(req, clone));
+            caches.open(CACHE_NAME).then((cache) => cache.put(req, clone)).catch(() => {});
           }
           return networkResponse;
         })
-        .catch(() => cachedResponse);
+        .catch(() => {
+          // Guaranteed fallback: return cached response if present, else graceful empty response
+          return cachedResponse || new Response('', { status: 408, statusText: 'Request Timeout' });
+        });
 
       return cachedResponse || fetchPromise;
     })

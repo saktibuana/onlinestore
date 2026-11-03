@@ -267,9 +267,9 @@ export const products = [
     category: 'home',
     categoryName: 'Kebutuhan Rumah',
     brand: 'PEXIO Ergonomic',
-    image: 'https://images.unsplash.com/photo-1580481077195-c328a37ea71a',
+    image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7',
     images: [
-      'https://images.unsplash.com/photo-1580481077195-c328a37ea71a'
+      'https://images.unsplash.com/photo-1586023492125-27b2c045efd7'
     ],
     shop: {
       name: 'Pexio Furniture Store',

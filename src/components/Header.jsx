@@ -320,7 +320,7 @@ export default function Header({ activeQuery = '' }) {
           <LogoContainer href="/">
             <svg viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
               <rect width="240" height="240" rx="48" fill="#03AC0E"/>
-              <path d="M120 42C90 42 74 60 74 86V92H166V86C166 60 150 42 120 42Z" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round" fill="none"/>
+              <path d="M120 42C90 42 74 60 74 86V92H166V86C166 60 150 42 120 42Z" stroke="#FFFFFF" strokeWidth="12" strokeLinecap="round" fill="none"/>
               <path d="M50 88H190L178 194C176 204 168 212 158 212H82C72 212 64 204 62 194L50 88Z" fill="#FFFFFF"/>
               <circle cx="95" cy="135" r="26" fill="#03AC0E"/>
               <circle cx="95" cy="135" r="16" fill="#FFFFFF"/>

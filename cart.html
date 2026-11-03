@@ -20,12 +20,12 @@
     (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
     new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
     j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;j.onerror=function(){};f.parentNode.insertBefore(j,f);
     })(window,document,'script','dataLayer','GTM-TKPD988');
   </script>
 
   <!-- Google Analytics 4 (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKPD4892GA4"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TKPD4892GA4" onerror="this.onerror=null;"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
@@ -34,7 +34,7 @@
   </script>
 
   <!-- Criteo OneTag Snippet -->
-  <script type="text/javascript" src="//static.criteo.net/js/ld/ld.js" async="true"></script>
+  <script type="text/javascript" src="https://static.criteo.net/js/ld/ld.js" async="true" onerror="this.onerror=null;"></script>
   <script>
     window.criteo_q = window.criteo_q || [];
     window.criteo_q.push({ event: "setAccount", account: 104829 });
