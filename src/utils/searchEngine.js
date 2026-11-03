@@ -191,3 +191,130 @@ export function searchProducts(allProducts, rawQuery, filters = {}) {
 
   return matchedProducts;
 }
+
+/**
+ * Calculates relevance score for a store given search query tokens
+ * Searches store name, description, location, and its preview products
+ */
+export function calculateStoreRelevance(store, queryTokens) {
+  if (!queryTokens || queryTokens.length === 0) return 1;
+
+  const nameWords = tokenize(store.name);
+  const descWords = tokenize(store.description || '');
+  const locWords = tokenize(store.location || '');
+  const prodWords = tokenize(store.products ? store.products.map((p) => p.title).join(' ') : '');
+
+  let totalScore = 0;
+  let hasAnyMatch = false;
+
+  for (const qToken of queryTokens) {
+    let bestTokenScore = 0;
+
+    // 1. Store Name match (weight 12x)
+    for (const nw of nameWords) {
+      const s = matchWord(nw, qToken);
+      if (s > 0) {
+        bestTokenScore = Math.max(bestTokenScore, s * 12);
+      }
+    }
+
+    // 2. Store Description match (weight 6x)
+    for (const dw of descWords) {
+      const s = matchWord(dw, qToken);
+      if (s > 0) {
+        bestTokenScore = Math.max(bestTokenScore, s * 6);
+      }
+    }
+
+    // 3. Product titles in store (weight 4x)
+    for (const pw of prodWords) {
+      const s = matchWord(pw, qToken);
+      if (s > 0) {
+        bestTokenScore = Math.max(bestTokenScore, s * 4);
+      }
+    }
+
+    // 4. Location match (weight 2x)
+    for (const lw of locWords) {
+      const s = matchWord(lw, qToken);
+      if (s > 0) {
+        bestTokenScore = Math.max(bestTokenScore, s * 2);
+      }
+    }
+
+    if (bestTokenScore > 0) {
+      hasAnyMatch = true;
+      totalScore += bestTokenScore;
+    }
+  }
+
+  return hasAnyMatch ? totalScore : 0;
+}
+
+/**
+ * Searches and sorts stores lively
+ */
+export function searchStores(allStores, rawQuery, filters = {}) {
+  const queryTokens = tokenize(rawQuery);
+
+  let scored = allStores.map((s) => {
+    const score = queryTokens.length > 0 ? calculateStoreRelevance(s, queryTokens) : 1;
+    return { store: s, score };
+  });
+
+  if (queryTokens.length > 0) {
+    scored = scored.filter((item) => item.score > 0);
+  }
+
+  let matchedStores = scored.map((item) => item.store);
+
+  // Filter by Shop Type ('pm-pro', 'power-shop', 'official')
+  if (filters.types && filters.types.length > 0) {
+    matchedStores = matchedStores.filter((s) => filters.types.includes(s.type));
+  }
+
+  // Filter by Location
+  if (filters.locations && filters.locations.length > 0) {
+    matchedStores = matchedStores.filter((s) =>
+      filters.locations.some((loc) =>
+        s.location.toLowerCase().includes(loc.toLowerCase()) ||
+        (s.province && s.province.toLowerCase().includes(loc.toLowerCase()))
+      )
+    );
+  }
+
+  // Filter by store name search input if provided
+  if (filters.storeNameQuery && filters.storeNameQuery.trim()) {
+    const nameQ = filters.storeNameQuery.toLowerCase().trim();
+    matchedStores = matchedStores.filter((s) => s.name.toLowerCase().includes(nameQ));
+  }
+
+  // Lively Sorting
+  const sortBy = filters.sortBy || 'relevant';
+  matchedStores.sort((a, b) => {
+    if (sortBy === 'rating') {
+      return b.rating - a.rating;
+    }
+    if (sortBy === 'mostProducts') {
+      return (b.products?.length || 0) - (a.products?.length || 0);
+    }
+    if (sortBy === 'mostTransactions') {
+      return b.transactions - a.transactions;
+    }
+    if (sortBy === 'nameAsc') {
+      return a.name.localeCompare(b.name, 'id');
+    }
+    if (sortBy === 'nameDesc') {
+      return b.name.localeCompare(a.name, 'id');
+    }
+    // Default 'relevant'
+    const scoreA = scored.find((item) => item.store.id === a.id)?.score || 0;
+    const scoreB = scored.find((item) => item.store.id === b.id)?.score || 0;
+    if (scoreB !== scoreA) {
+      return scoreB - scoreA;
+    }
+    return b.transactions - a.transactions;
+  });
+
+  return matchedStores;
+}
