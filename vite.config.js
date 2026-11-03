@@ -8,14 +8,26 @@ function akamaiEdgeSimulatorPlugin() {
     name: 'akamai-edge-simulator',
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
-        // Simulate Akamai Edge CDN headers on all responses
+        // Do not intercept WebSockets, HMR, or Vite internal modules
+        if (
+          req.headers.upgrade === 'websocket' ||
+          req.url.startsWith('/@') ||
+          req.url.startsWith('/node_modules/') ||
+          req.url.includes('?v=') ||
+          req.url.includes('?token=')
+        ) {
+          return next();
+        }
+
+        // Simulate Akamai Edge CDN headers on page/asset responses
         res.setHeader('Edge-Control', 'cache-maxage=86400, stale-while-revalidate=604800');
         res.setHeader('Akamai-Cache-Status', 'HIT (CGK-Edge-Node-01)');
         res.setHeader('Akamai-Edge-Worker', 'v2.4.1-tokopedia-edge');
         res.setHeader('X-Akamai-Pragma', 'akamai-x-cache-on, akamai-x-cache-remote-on, akamai-x-check-cacheable, akamai-x-get-cache-key');
         res.setHeader('X-Akamai-Edge-Server', 'akamai-cgk-id.edgekey.net');
         res.setHeader('X-Edge-Origin', 'tokopedia-origin-jakarta');
-        res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800');
+        // Prevent stale browser caching during dev HMR
+        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
         next();
       });
     }
@@ -27,7 +39,34 @@ export default defineConfig({
     alias: {
       '@loadable/component': resolve(import.meta.dirname, 'src/utils/loadable.jsx')
     },
-    dedupe: ['react', 'react-dom']
+    dedupe: [
+      'react',
+      'react-dom',
+      'react-dom/client',
+      '@emotion/react',
+      '@emotion/styled',
+      'branch-sdk',
+      'lucide-react'
+    ]
+  },
+  optimizeDeps: {
+    include: [
+      'react',
+      'react-dom',
+      'react-dom/client',
+      '@emotion/react',
+      '@emotion/styled',
+      'branch-sdk',
+      'lucide-react'
+    ]
+  },
+  server: {
+    port: 3000,
+    open: false,
+    strictPort: true,
+    watch: {
+      ignored: ['**/dist/**', '**/*corrupted*/**', '**/trash*/**']
+    }
   },
   plugins: [
     react({
@@ -47,13 +86,6 @@ export default defineConfig({
         cart: resolve(import.meta.dirname, 'cart.html'),
         offline: resolve(import.meta.dirname, 'offline.html')
       }
-    }
-  },
-  server: {
-    port: 3000,
-    open: false,
-    watch: {
-      ignored: ['**/dist/**', '**/*corrupted*/**', '**/trash*/**']
     }
   }
 });

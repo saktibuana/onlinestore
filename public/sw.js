@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tokopedia-edge-v1.5';
+const CACHE_NAME = 'tokopedia-edge-v2.0';
 const OFFLINE_URL = '/offline.html';
 
 const STATIC_ASSETS = [
@@ -14,17 +14,18 @@ const STATIC_ASSETS = [
 
 // Install: Pre-cache core app shell & offline page
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       console.log('[Tokopedia Service Worker] Pre-caching static assets & offline shell');
       return cache.addAll(STATIC_ASSETS).catch((err) => {
         console.warn('[Tokopedia SW] Pre-cache partial notice:', err);
       });
-    }).then(() => self.skipWaiting())
+    })
   );
 });
 
-// Activate: Clean old caches & claim clients immediately
+// Activate: Clean all outdated caches and claim clients immediately
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -51,14 +52,25 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(req.url);
 
-  // 2. Only handle same-origin requests
-  // External analytics/tracking (Criteo, GTM, GA4, CDNs) pass through directly to the browser
-  // to avoid ad-blocker or network-switch promise rejections.
+  // 2. Never intercept external requests (Criteo, GTM, GA4, Branch, CDNs, extensions)
   if (url.origin !== self.location.origin) {
     return;
   }
 
-  // 3. HTML Navigation requests: Network-First with Offline Fallback
+  // 3. Never intercept Vite development internals, HMR, or dynamic source modules
+  // Caching these breaks hot reloading and poisons browser cache with stale React dispatchers
+  if (
+    url.pathname.startsWith('/@') ||
+    url.pathname.startsWith('/src/') ||
+    url.pathname.startsWith('/node_modules/') ||
+    url.searchParams.has('v') ||
+    url.searchParams.has('t') ||
+    url.searchParams.has('token')
+  ) {
+    return;
+  }
+
+  // 4. HTML Navigation requests: Network-First with Offline Fallback
   if (req.mode === 'navigate') {
     event.respondWith(
       fetch(req)
@@ -78,7 +90,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 4. Same-origin static assets: Stale-While-Revalidate with guaranteed Response
+  // 5. Static production assets (assets, icons, etc.): Stale-While-Revalidate with guaranteed Response
   event.respondWith(
     caches.match(req).then((cachedResponse) => {
       const fetchPromise = fetch(req)
@@ -90,7 +102,6 @@ self.addEventListener('fetch', (event) => {
           return networkResponse;
         })
         .catch(() => {
-          // Guaranteed fallback: return cached response if present, else graceful empty response
           return cachedResponse || new Response('', { status: 408, statusText: 'Request Timeout' });
         });
 
