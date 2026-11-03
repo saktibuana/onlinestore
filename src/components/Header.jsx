@@ -16,7 +16,8 @@ import {
   RefreshCw,
   Truck,
   CheckCircle2,
-  ExternalLink
+  ExternalLink,
+  Sparkles
 } from 'lucide-react';
 import { cartService } from '../services/cartService';
 import { userService } from '../services/userService';
@@ -485,18 +486,36 @@ const DeliveryBar = styled.div`
   }
 `;
 
+const NotifBellWrapper = styled.div`
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+`;
+
 /* Authentic Notification Popover Drawer (Matching Screenshot media_1793693970696_126bf9de.png) */
 const NotificationDrawer = styled.div`
   position: absolute;
-  top: 44px;
-  right: 50px;
+  top: calc(100% + 8px);
+  right: -80px;
   width: 380px;
   background: #FFFFFF;
   border: 1px solid #E5E7EB;
   border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16);
   z-index: 1000;
   overflow: hidden;
+  animation: notifFadeIn 0.18s ease-out;
+
+  @keyframes notifFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 
   .notif-header {
     display: flex;
@@ -514,6 +533,9 @@ const NotificationDrawer = styled.div`
 
     a.settings-link {
       color: #6D7588;
+      display: flex;
+      align-items: center;
+      transition: color 0.15s;
       &:hover { color: #03AC0E; }
     }
   }
@@ -532,6 +554,11 @@ const NotificationDrawer = styled.div`
       color: #6D7588;
       cursor: pointer;
       position: relative;
+      transition: all 0.15s;
+
+      &:hover {
+        color: #03AC0E;
+      }
 
       &.active {
         color: #03AC0E;
@@ -553,14 +580,22 @@ const NotificationDrawer = styled.div`
 
   .notif-body {
     padding: 14px 16px;
-    max-height: 380px;
+    max-height: 420px;
     overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 5px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #D1D5DB;
+      border-radius: 4px;
+    }
 
     .section-title-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 10px;
+      margin-bottom: 4px;
 
       span.sec-name {
         font-size: 13px;
@@ -573,7 +608,14 @@ const NotificationDrawer = styled.div`
         font-weight: 600;
         color: #03AC0E;
         text-decoration: none;
+        &:hover { text-decoration: underline; }
       }
+    }
+
+    .sub-status-label {
+      font-size: 11px;
+      color: #6D7588;
+      margin-bottom: 12px;
     }
 
     .order-status-icons {
@@ -581,7 +623,7 @@ const NotificationDrawer = styled.div`
       grid-template-columns: repeat(4, 1fr);
       gap: 8px;
       text-align: center;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
 
       .icon-box {
         display: flex;
@@ -591,16 +633,19 @@ const NotificationDrawer = styled.div`
         font-size: 11px;
         color: #6D7588;
         cursor: pointer;
+        line-height: 1.25;
 
         .circle {
-          width: 38px;
-          height: 38px;
+          width: 40px;
+          height: 40px;
           border-radius: 50%;
           border: 1px solid #E5E7EB;
           display: flex;
           align-items: center;
           justify-content: center;
           color: #03AC0E;
+          background: #FFFFFF;
+          transition: background-color 0.15s, border-color 0.15s;
         }
 
         &:hover .circle {
@@ -613,9 +658,9 @@ const NotificationDrawer = styled.div`
     .seller-box {
       border: 1px solid #E5E7EB;
       border-radius: 8px;
-      padding: 12px;
-      margin-bottom: 14px;
-      background: #F8F9FA;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      background: #FFFFFF;
 
       h4 {
         margin: 0 0 4px;
@@ -628,6 +673,7 @@ const NotificationDrawer = styled.div`
         margin: 0 0 10px;
         font-size: 11px;
         color: #6D7588;
+        line-height: 1.4;
       }
 
       button.seller-btn {
@@ -636,13 +682,115 @@ const NotificationDrawer = styled.div`
         border: 1px solid #03AC0E;
         color: #03AC0E;
         font-weight: 700;
-        padding: 6px;
+        padding: 7px;
         border-radius: 6px;
         font-size: 12px;
         cursor: pointer;
+        transition: all 0.15s;
+
         &:hover {
           background-color: #03AC0E;
           color: #FFFFFF;
+        }
+      }
+    }
+
+    .untuk-kamu-section {
+      margin-top: 10px;
+
+      h4.sec-header {
+        font-size: 13px;
+        font-weight: 700;
+        color: #212121;
+        margin: 0 0 10px;
+      }
+
+      .promo-notif-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 8px 0;
+        border-bottom: 1px solid #F0F3F7;
+        cursor: pointer;
+
+        &:hover .item-title {
+          color: #03AC0E;
+        }
+
+        .promo-icon-badge {
+          width: 32px;
+          height: 32px;
+          border-radius: 6px;
+          background-color: #EBF7ED;
+          color: #03AC0E;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+        }
+
+        .item-texts {
+          display: flex;
+          flex-direction: column;
+
+          .item-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #212121;
+            line-height: 1.35;
+          }
+
+          .item-time {
+            font-size: 10px;
+            color: #9FA6B0;
+            margin-top: 2px;
+          }
+        }
+      }
+    }
+
+    /* Update Tab Items */
+    .update-list {
+      display: flex;
+      flex-direction: column;
+
+      .update-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid #F0F3F7;
+        cursor: pointer;
+
+        &:hover .update-title {
+          color: #03AC0E;
+        }
+
+        .dot-indicator {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: #03AC0E;
+          margin-top: 5px;
+          flex-shrink: 0;
+        }
+
+        .update-content {
+          display: flex;
+          flex-direction: column;
+
+          .update-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #212121;
+            line-height: 1.4;
+          }
+
+          .update-time {
+            font-size: 10px;
+            color: #9FA6B0;
+            margin-top: 3px;
+          }
         }
       }
     }
@@ -663,12 +811,15 @@ const NotificationDrawer = styled.div`
       color: #03AC0E;
       font-weight: 600;
       cursor: pointer;
+      padding: 0;
+      &:hover { text-decoration: underline; }
     }
 
     a.full-link {
       color: #03AC0E;
       font-weight: 600;
       text-decoration: none;
+      &:hover { text-decoration: underline; }
     }
   }
 `;
@@ -689,6 +840,44 @@ export default function Header({ activeQuery = '', storeContext = null, onStoreS
 
   const searchContainerRef = useRef(null);
   const notifContainerRef = useRef(null);
+  const notifCloseTimeoutRef = useRef(null);
+
+  const handleNotifMouseEnter = () => {
+    if (notifCloseTimeoutRef.current) {
+      clearTimeout(notifCloseTimeoutRef.current);
+      notifCloseTimeoutRef.current = null;
+    }
+    setShowNotifDrawer(true);
+  };
+
+  const handleNotifMouseLeave = () => {
+    notifCloseTimeoutRef.current = setTimeout(() => {
+      setShowNotifDrawer(false);
+    }, 280);
+  };
+
+  const handleNotifClick = (e) => {
+    e.preventDefault();
+    if (notifCloseTimeoutRef.current) {
+      clearTimeout(notifCloseTimeoutRef.current);
+      notifCloseTimeoutRef.current = null;
+    }
+    setShowNotifDrawer((prev) => !prev);
+  };
+
+  const [readAllSuccess, setReadAllSuccess] = useState(false);
+
+  const handleMarkAllAsRead = (e) => {
+    e.preventDefault();
+    const updated = {
+      ...userProfile,
+      unreadNotifications: 0
+    };
+    userService.saveProfile(updated);
+    setUserProfile(updated);
+    setReadAllSuccess(true);
+    setTimeout(() => setReadAllSuccess(false), 2500);
+  };
 
   useEffect(() => {
     if (storeContext) {
@@ -937,106 +1126,196 @@ export default function Header({ activeQuery = '', storeContext = null, onStoreS
             </QuickKeywords>
           </div>
 
-          <ActionsContainer ref={notifContainerRef}>
+          <ActionsContainer>
             <IconButton href="/cart.html" aria-label="Keranjang Belanja">
               <ShoppingCart size={22} />
               {cartCount > 0 && <span className="badge">{cartCount}</span>}
             </IconButton>
 
-            {/* Notification Bell Button */}
-            <IconButton
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                setShowNotifDrawer(!showNotifDrawer);
-              }}
-              aria-label="Notifikasi"
+            {/* Notification Bell Button with Hover & Pressed Trigger */}
+            <NotifBellWrapper
+              ref={notifContainerRef}
+              onMouseEnter={handleNotifMouseEnter}
+              onMouseOver={handleNotifMouseEnter}
+              onMouseLeave={handleNotifMouseLeave}
             >
-              <Bell size={22} />
-              <span className="badge" style={{ backgroundColor: '#FF5722' }}>
-                {userProfile.unreadNotifications || 4}
-              </span>
-            </IconButton>
+              <IconButton
+                href="#"
+                onClick={handleNotifClick}
+                onMouseEnter={handleNotifMouseEnter}
+                aria-label="Notifikasi"
+                style={showNotifDrawer ? { backgroundColor: '#F0F3F7', color: '#03AC0E' } : {}}
+              >
+                <Bell size={22} />
+                {(userProfile.unreadNotifications || 0) > 0 && (
+                  <span className="badge" style={{ backgroundColor: '#FF5722' }}>
+                    {userProfile.unreadNotifications}
+                  </span>
+                )}
+              </IconButton>
 
-            {/* Authentic Notification Drawer Popover */}
-            {showNotifDrawer && (
-              <NotificationDrawer>
-                <div className="notif-header">
-                  <h3>Notifikasi</h3>
-                  <a href="/notifications.html" className="settings-link" title="Pengaturan Notifikasi">
-                    <Settings size={18} />
-                  </a>
-                </div>
-
-                <div className="notif-tabs">
-                  <button
-                    type="button"
-                    className={`tab-btn ${notifTab === 'transaksi' ? 'active' : ''}`}
-                    onClick={() => setNotifTab('transaksi')}
-                  >
-                    Transaksi
-                  </button>
-                  <button
-                    type="button"
-                    className={`tab-btn ${notifTab === 'update' ? 'active' : ''}`}
-                    onClick={() => setNotifTab('update')}
-                  >
-                    Update (4) <span className="red-dot"></span>
-                  </button>
-                </div>
-
-                <div className="notif-body">
-                  <div className="section-title-row">
-                    <span className="sec-name">Pembelian</span>
-                    <a href="/cart.html" className="see-all">Lihat Semua</a>
+              {/* Authentic Notification Drawer Popover matching media_1793693970696_126bf9de.png */}
+              {showNotifDrawer && (
+                <NotificationDrawer
+                  onMouseEnter={handleNotifMouseEnter}
+                  onMouseLeave={handleNotifMouseLeave}
+                >
+                  <div className="notif-header">
+                    <h3>Notifikasi</h3>
+                    <a href="/notifications.html" className="settings-link" title="Pengaturan Notifikasi">
+                      <Settings size={18} />
+                    </a>
                   </div>
 
-                  <div className="order-status-icons">
-                    <div className="icon-box" onClick={() => alert('Menunggu Konfirmasi')}>
-                      <div className="circle"><Clock size={16} /></div>
-                      <span>Menunggu Konfirmasi</span>
-                    </div>
-                    <div className="icon-box" onClick={() => alert('Pesanan Diproses')}>
-                      <div className="circle"><RefreshCw size={16} /></div>
-                      <span>Pesanan Diproses</span>
-                    </div>
-                    <div className="icon-box" onClick={() => alert('Sedang Dikirim')}>
-                      <div className="circle"><Truck size={16} /></div>
-                      <span>Sedang Dikirim</span>
-                    </div>
-                    <div className="icon-box" onClick={() => alert('Sampai Tujuan')}>
-                      <div className="circle"><CheckCircle2 size={16} /></div>
-                      <span>Sampai Tujuan</span>
-                    </div>
-                  </div>
-
-                  <div className="seller-box">
-                    <h4>Penjualan</h4>
-                    <p>Cek pesanan yang masuk dan perkembangan tokomu secara rutin di satu tempat</p>
+                  <div className="notif-tabs">
                     <button
                       type="button"
-                      className="seller-btn"
-                      onClick={() => alert('Membuka Tokopedia Seller')}
+                      className={`tab-btn ${notifTab === 'transaksi' ? 'active' : ''}`}
+                      onClick={() => setNotifTab('transaksi')}
                     >
-                      Masuk ke Tokopedia Seller
+                      Transaksi
+                    </button>
+                    <button
+                      type="button"
+                      className={`tab-btn ${notifTab === 'update' ? 'active' : ''}`}
+                      onClick={() => setNotifTab('update')}
+                    >
+                      Update {userProfile.unreadNotifications > 0 ? `(${userProfile.unreadNotifications})` : ''}
+                      {userProfile.unreadNotifications > 0 && <span className="red-dot"></span>}
                     </button>
                   </div>
-                </div>
 
-                <div className="notif-footer">
-                  <button
-                    type="button"
-                    className="read-all-btn"
-                    onClick={() => alert('Semua notifikasi telah ditandai dibaca.')}
-                  >
-                    Tandai semua dibaca
-                  </button>
-                  <a href="/notifications.html" className="full-link">
-                    Lihat selengkapnya
-                  </a>
-                </div>
-              </NotificationDrawer>
-            )}
+                  <div className="notif-body">
+                    {notifTab === 'transaksi' ? (
+                      <>
+                        <div className="section-title-row">
+                          <span className="sec-name">Pembelian</span>
+                          <a href="/cart.html" className="see-all">Lihat Semua</a>
+                        </div>
+                        <div className="sub-status-label">Menunggu Pembayaran</div>
+
+                        <div className="order-status-icons">
+                          <div className="icon-box" onClick={() => alert('Menampilkan pesanan: Menunggu Konfirmasi')}>
+                            <div className="circle"><Clock size={16} /></div>
+                            <span>Menunggu Konfirmasi</span>
+                          </div>
+                          <div className="icon-box" onClick={() => alert('Menampilkan pesanan: Pesanan Diproses')}>
+                            <div className="circle"><RefreshCw size={16} /></div>
+                            <span>Pesanan Diproses</span>
+                          </div>
+                          <div className="icon-box" onClick={() => alert('Menampilkan pesanan: Sedang Dikirim')}>
+                            <div className="circle"><Truck size={16} /></div>
+                            <span>Sedang Dikirim</span>
+                          </div>
+                          <div className="icon-box" onClick={() => alert('Menampilkan pesanan: Sampai Tujuan')}>
+                            <div className="circle"><CheckCircle2 size={16} /></div>
+                            <span>Sampai Tujuan</span>
+                          </div>
+                        </div>
+
+                        <div className="seller-box">
+                          <h4>Penjualan</h4>
+                          <p>Cek pesanan yang masuk dan perkembangan tokomu secara rutin di satu tempat</p>
+                          <button
+                            type="button"
+                            className="seller-btn"
+                            onClick={() => alert(`Membuka Tokopedia Seller untuk toko: ${userProfile.storeName || "Buana's Inve..."}`)}
+                          >
+                            Masuk ke Tokopedia Seller
+                          </button>
+                        </div>
+
+                        <div className="untuk-kamu-section">
+                          <h4 className="sec-header">Untuk Kamu</h4>
+                          <div
+                            className="promo-notif-item"
+                            onClick={() => { window.location.href = '/store.html?shop=pira-indonesia'; }}
+                          >
+                            <div className="promo-icon-badge">
+                              <Sparkles size={16} />
+                            </div>
+                            <div className="item-texts">
+                              <span className="item-title">
+                                Spesial untuk kamu: Promo diskon s.d 70% di PIRA Indonesia
+                              </span>
+                              <span className="item-time">1 jam lalu</span>
+                            </div>
+                          </div>
+                          <div
+                            className="promo-notif-item"
+                            onClick={() => { window.location.href = '/search.html?q=meja'; }}
+                          >
+                            <div className="promo-icon-badge">
+                              <Truck size={16} />
+                            </div>
+                            <div className="item-texts">
+                              <span className="item-title">
+                                Bebas Ongkir s.d Rp 40.000 untuk pengiriman ke alamatmu
+                              </span>
+                              <span className="item-time">3 jam lalu</span>
+                            </div>
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="update-list">
+                        {[
+                          {
+                            id: 'up-1',
+                            title: 'PIRA Indonesia menambahkan produk HT & Meja Belajar baru ke etalase',
+                            time: '1 jam lalu',
+                            link: '/store.html?shop=pira-indonesia'
+                          },
+                          {
+                            id: 'up-2',
+                            title: 'Flash Sale Tokopedia! Diskon gadget & furniture hingga 90% hari ini',
+                            time: '4 jam lalu',
+                            link: '/search.html?q=meja'
+                          },
+                          {
+                            id: 'up-3',
+                            title: 'Kupon diskon Rp 50.000 sudah masuk ke kantong promomu',
+                            time: '1 hari lalu',
+                            link: '/notifications.html'
+                          },
+                          {
+                            id: 'up-4',
+                            title: 'Pesanan #TKP-88219 Anda telah selesai. Berikan ulasan untuk dapatkan koin!',
+                            time: '2 hari lalu',
+                            link: '/profile.html'
+                          }
+                        ].map((item, idx) => (
+                          <div
+                            key={item.id}
+                            className="update-item"
+                            onClick={() => { window.location.href = item.link; }}
+                          >
+                            {userProfile.unreadNotifications > idx && <span className="dot-indicator"></span>}
+                            <div className="update-content">
+                              <span className="update-title">{item.title}</span>
+                              <span className="update-time">{item.time}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="notif-footer">
+                    <button
+                      type="button"
+                      className="read-all-btn"
+                      onClick={handleMarkAllAsRead}
+                    >
+                      {readAllSuccess ? 'Semua dibaca ✓' : 'Tandai semua dibaca'}
+                    </button>
+                    <a href="/notifications.html" className="full-link">
+                      Lihat selengkapnya
+                    </a>
+                  </div>
+                </NotificationDrawer>
+              )}
+            </NotifBellWrapper>
 
             <IconButton href="#" onClick={(e) => { e.preventDefault(); alert('Pesan Obrolan Tokopedia.'); }} aria-label="Pesan">
               <Mail size={22} />
